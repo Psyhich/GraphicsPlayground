@@ -26065,12 +26065,84 @@
        return true;
    });
 
-   const editorTheme = EditorView.theme("darcula");
+   const base00 = '#2E3235', base01 = '#DDDDDD', base02 = '#B9D2FF', base03 = '#b0b0b0', base05 = '#e0e0e0', base06 = '#808080', base07 = '#000000';
+   const darkBackground = '#292d30', highlightBackground = base02 + '30', background = base00, tooltipBackground = base01, selection = '#202325', cursor = base01;
+   /**
+   The editor theme styles for Basic Dark.
+   */
+   const basicDarkTheme = /*@__PURE__*/EditorView.theme({
+       '&': {
+           color: base01,
+           backgroundColor: background
+       },
+       '.cm-content': {
+           caretColor: cursor
+       },
+       '.cm-cursor, .cm-dropCursor': { borderLeftColor: cursor },
+       '&.cm-focused .cm-selectionBackground, .cm-selectionBackground, .cm-content ::selection': { backgroundColor: selection },
+       '.cm-panels': { backgroundColor: darkBackground, color: base03 },
+       '.cm-panels.cm-panels-top': { borderBottom: '2px solid black' },
+       '.cm-panels.cm-panels-bottom': { borderTop: '2px solid black' },
+       '.cm-searchMatch': {
+           backgroundColor: base02,
+           outline: `1px solid ${base03}`,
+           color: base07
+       },
+       '.cm-searchMatch.cm-searchMatch-selected': {
+           backgroundColor: base05,
+           color: base07
+       },
+       '.cm-activeLine': { backgroundColor: highlightBackground },
+       '.cm-selectionMatch': { backgroundColor: highlightBackground },
+       '&.cm-focused .cm-matchingBracket, &.cm-focused .cm-nonmatchingBracket': {
+           outline: `1px solid ${base03}`
+       },
+       '&.cm-focused .cm-matchingBracket': {
+           backgroundColor: base02,
+           color: base07
+       },
+       '.cm-gutters': {
+           borderRight: `1px solid #ffffff10`,
+           color: base06,
+           backgroundColor: darkBackground
+       },
+       '.cm-activeLineGutter': {
+           backgroundColor: highlightBackground
+       },
+       '.cm-foldPlaceholder': {
+           backgroundColor: 'transparent',
+           border: 'none',
+           color: base02
+       },
+       '.cm-tooltip': {
+           border: 'none',
+           backgroundColor: tooltipBackground
+       },
+       '.cm-tooltip .cm-tooltip-arrow:before': {
+           borderTopColor: 'transparent',
+           borderBottomColor: 'transparent'
+       },
+       '.cm-tooltip .cm-tooltip-arrow:after': {
+           borderTopColor: tooltipBackground,
+           borderBottomColor: tooltipBackground
+       },
+       '.cm-tooltip-autocomplete': {
+           '& > ul > li[aria-selected]': {
+               backgroundColor: highlightBackground,
+               color: base03
+           }
+       }
+   }, { dark: true });
 
+   const themeConfig = new Compartment();
 
-   new EditorView({
-     extensions: [editorTheme, basicSetup, javascript()],
+   let editor = new EditorView({
+     extensions: [basicSetup, javascript(), themeConfig.of(basicDarkTheme)],
      parent: document.getElementById('editor')
+   });
+
+   editor.dispatch({
+     changes: {from: 0, insert: "\n\n\n\n\n\n\n"}
    });
 
 })();
