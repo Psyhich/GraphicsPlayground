@@ -1,19 +1,20 @@
 import { Compartment } from '@codemirror/state'
+import {keymap} from "@codemirror/view"
 import {EditorView, basicSetup} from "codemirror"
 import {javascript} from "@codemirror/lang-javascript"
+import {indentWithTab} from "@codemirror/commands"
 
 import { initBuffers } from "./init-buffers.js";
 import { drawScene } from "./draw-scene.js";
 
 let editor = new EditorView({
-  extensions: [basicSetup, javascript()],
+  extensions: [basicSetup, javascript(), keymap.of([indentWithTab]),],
   parent: document.getElementById('editor')
 })
 
 editor.dispatch({
   changes: {from: 0, insert: "\n\n\n\n\n\n\n"}
 })
-
 
 
 main();
@@ -100,28 +101,28 @@ function main() {
 
   // Only continue if WebGL is available and working
   if (gl === null) {
-    alert(
-      "Unable to initialize WebGL. Your browser or machine may not support it.",
-    );
-    return;
+  alert(
+    "Unable to initialize WebGL. Your browser or machine may not support it.",
+  );
+  return;
   }
 
   // Initialize a shader program; this is where all the lighting
   // for the vertices and so forth is established.
   const shaderProgram = initShaderProgram(gl, vsSource, fsSource);
-  
+
   // Collect all the info needed to use the shader program.
   // Look up which attribute our shader program is using
   // for aVertexPosition and look up uniform locations.
   const programInfo = {
-    program: shaderProgram,
-    attribLocations: {
-      vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
-    },
-    uniformLocations: {
-      projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
-      modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
-    },
+  program: shaderProgram,
+  attribLocations: {
+    vertexPosition: gl.getAttribLocation(shaderProgram, "aVertexPosition"),
+  },
+  uniformLocations: {
+    projectionMatrix: gl.getUniformLocation(shaderProgram, "uProjectionMatrix"),
+    modelViewMatrix: gl.getUniformLocation(shaderProgram, "uModelViewMatrix"),
+  },
   };
 
   // Here's where we call the routine that builds all the
