@@ -1,14 +1,26 @@
+using Microsoft.Extensions.FileProviders;
 
-var builder = WebApplication.CreateBuilder(args);
-
+var builder = WebApplication.CreateBuilder();
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 
 var app = builder.Build();
-var contr = new Playground.Controllers.APIController();
+
+if (builder.Environment.IsDevelopment())
+{
+    app.UseStaticFiles(new StaticFileOptions()
+    {
+		FileProvider = new PhysicalFileProvider(Path.Join(Directory.GetCurrentDirectory(), "../../node_modules")),
+		RequestPath = new PathString("/node_modules")
+    });
+}
+
+app.UseStaticFiles(new StaticFileOptions()
+{
+	FileProvider = new PhysicalFileProvider(Path.Join(Directory.GetCurrentDirectory(), "../../public/")),
+	RequestPath = new PathString("")
+});
 
 app.UseRouting();
-app.MapGet("/", () => "Жопа");
-app.UseHttpsRedirection();
 app.MapControllers();
 app.Run();
