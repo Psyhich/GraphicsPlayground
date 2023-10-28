@@ -13,15 +13,20 @@ public class APIController : Controller
 		public string hash{get;set;}
 	}
 
+	public struct CodeStruct
+	{
+		public string code{get;set;}
+	}
+
 	public APIController()
 	{
 		files = new FilesNotebook("files/");
 	}
 
 	[HttpPost("create")]
-	public IActionResult Create(HashStruct notebook)
+	public IActionResult Create(CodeStruct notebook)
 	{
-		var notebookData = files.Create(notebook.hash);
+		var notebookData = files.Create(notebook.code);
 		var resp = new HttpResponseMessage();
 		HashStruct hashStruct = new HashStruct();
 		hashStruct.hash = notebookData.hash;
@@ -39,7 +44,6 @@ public class APIController : Controller
 		catch(NotebookDoesntExists)
 		{
 			return NotFound();
-
 		}
 	}
 
