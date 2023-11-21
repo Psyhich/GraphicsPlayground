@@ -10,14 +10,14 @@ if (builder.Environment.IsDevelopment())
 {
     app.UseStaticFiles(new StaticFileOptions()
     {
-		FileProvider = new PhysicalFileProvider(Path.Join(Directory.GetCurrentDirectory(), "../../node_modules")),
+		FileProvider = new PhysicalFileProvider(Path.Join(Directory.GetCurrentDirectory(), "..", "..", "node_modules")),
 		RequestPath = new PathString("/node_modules")
     });
 }
 
 app.UseStaticFiles(new StaticFileOptions()
 {
-	FileProvider = new PhysicalFileProvider(Path.Join(Directory.GetCurrentDirectory(), "../../public/")),
+	FileProvider = new PhysicalFileProvider(Path.Join(Directory.GetCurrentDirectory(), "..", "..", "public")),
 	RequestPath = new PathString("")
 });
 
