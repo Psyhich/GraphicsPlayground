@@ -4,9 +4,7 @@
   "description": "",
   "main": "src/server.js",
   "scripts": {
-    "postinstall": "cd ./wwwroot/extensions/webgl-viewer && npm install",
     "build": "node_modules\\.bin\\rollup public\\editor.mjs -f iife -o public\\editor.bundle.js -p @rollup/plugin-node-resolve",
-    "buildExtensions": "cd ./wwwroot/extensions/webgl-viewer && npm run compile-web",
     "start": "dotnet run --project backend/Playground/"
   },
   "author": "",
