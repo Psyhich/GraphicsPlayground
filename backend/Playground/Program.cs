@@ -15,7 +15,11 @@ if (builder.Environment.IsDevelopment())
     });
 }
 
-app.UseStaticFiles();
+app.UseStaticFiles(new StaticFileOptions()
+{
+    FileProvider = new PhysicalFileProvider(Path.Join(Directory.GetCurrentDirectory(), "..", "..", "public")),
+    RequestPath = new PathString("")
+});
 
 app.UseRouting();
 app.MapControllers();
