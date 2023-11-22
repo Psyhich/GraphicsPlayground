@@ -20,6 +20,7 @@ app.UseStaticFiles(new StaticFileOptions()
     FileProvider = new PhysicalFileProvider(Path.Join(Directory.GetCurrentDirectory(), "..", "..", "wwwroot")),
     RequestPath = new PathString("")
 });
+app.UseDefaultFiles();
 
 app.UseRouting();
 app.MapControllers();
