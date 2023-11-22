@@ -15,12 +15,22 @@ if (builder.Environment.IsDevelopment())
     });
 }
 
+var wwwrootPath = Path.Join(Directory.GetCurrentDirectory(), "..", "..", "wwwroot");
+
 app.UseStaticFiles(new StaticFileOptions()
 {
-    FileProvider = new PhysicalFileProvider(Path.Join(Directory.GetCurrentDirectory(), "..", "..", "wwwroot")),
+    FileProvider = new PhysicalFileProvider(wwwrootPath),
     RequestPath = new PathString("")
 });
-app.UseDefaultFiles();
+
+app.UseFileServer(new FileServerOptions
+{
+    FileProvider = new PhysicalFileProvider(
+        Path.Combine(Directory.GetCurrentDirectory(), @"..\..\wwwroot")),
+    RequestPath = "",
+    EnableDefaultFiles = true,
+    DefaultFilesOptions = { DefaultFileNames = new[] { "index.html" } }
+});
 
 app.UseRouting();
 app.MapControllers();
