@@ -2,9 +2,9 @@
 To run application in development mode you should have dotnet 7 and npm installed
 
 npm packages:
-tsc - TypeScript compiler for extensions
-webpack and webpack-cli - For bundling extensions
-yarn - just in case
+* tsc - TypeScript compiler for extensions
+* webpack and webpack-cli - For bundling extensions
+* yarn - just in case
 
 
 # Running
