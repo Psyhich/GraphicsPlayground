@@ -17,11 +17,10 @@
         ]
       }
     },
-    "folderUri": {
-      "scheme": "memfs",
-      "path": "/sample-folder"
-    },
     "additionalBuiltinExtensions": [
+      {
+        "path": "extensions/filesystem/"
+      },
       {
         "path": "extensions/webgl-viewer/"
       }
