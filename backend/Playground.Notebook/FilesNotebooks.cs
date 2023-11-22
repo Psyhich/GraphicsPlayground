@@ -2,25 +2,39 @@ using System.Text;
 
 namespace Playground.Notebook;
 
-public class FilesNotebook : INotebookRepository
+public class FilesPlayground : IPlaygroundRepository
 {
-	public FilesNotebook(string directoryPath)
+	public FilesPlayground(string directoryPath)
 	{
 		m_directoryPath = directoryPath;
 		Directory.CreateDirectory(directoryPath);
 	}
 
-	public NotebookData Create(string code)
+	public PlaygroundData Save(PlaygroundData data)
 	{
-		NotebookData newData = new NotebookData(code);
-		while(Path.Exists(Path.Join(m_directoryPath, newData.hash)))
+		string playgroundPath = "";
+		do
 		{
-			newData.hash = NotebookData.GetHash(code + newData.hash);
+			data.CalculateHash();
+			playgroundPath = Path.Join(m_directoryPath, data.hash);
+
+		} while(Path.Exists(playgroundPath));
+
+		Directory.CreateDirectory(playgroundPath);
+		foreach (var (name, code) in data.files)
+		{
+			if (name.Contains("/"))
+			{
+				int lastSeparator = name.LastIndexOf("/");
+				string dirs = name.Substring(0, lastSeparator);
+				CreateDirectoryRecursively(playgroundPath, dirs);
+			}
+
+			File.WriteAllBytes(Path.Join(playgroundPath, name),
+				Encoding.UTF8.GetBytes(code));
 		}
 
-		File.WriteAllBytes(Path.Join(m_directoryPath, newData.hash), Encoding.UTF8.GetBytes(newData.code));
-
-		return newData;
+		return data;
 	}
 
 	public void Delete(string hash)
@@ -31,33 +45,81 @@ public class FilesNotebook : INotebookRepository
 		}
 		else
 		{
-			throw new NotebookDoesntExists();
+			throw new PlaygroundDoesntExists();
 		}
 	}
 
-	public void Edit(NotebookData editedData)
+	public void Update(PlaygroundData editedData)
 	{
-		if(Path.Exists(Path.Join(m_directoryPath, editedData.hash)))
+		string playgroundPath = Path.Join(m_directoryPath, editedData.hash);
+		if(!Path.Exists(playgroundPath))
 		{
-			File.WriteAllBytes(Path.Join(m_directoryPath, editedData.hash), Encoding.UTF8.GetBytes(editedData.code));
+			throw new PlaygroundDoesntExists();
 		}
-		else
+
+		foreach (var (fileName, code) in editedData.files)
 		{
-			throw new NotebookDoesntExists();
+			File.WriteAllBytes(Path.Join(playgroundPath, fileName), Encoding.UTF8.GetBytes(code));
 		}
 	}
 
-	public NotebookData GetByHash(string hash)
+	public PlaygroundData GetByHash(string hash)
 	{
-		if(Path.Exists(Path.Join(m_directoryPath, hash)))
+		string playgroundPath = Path.Join(m_directoryPath, hash); 
+		if (!Path.Exists(playgroundPath))
 		{
-			NotebookData data = new NotebookData();
-			data.hash = hash;
-			data.code = File.ReadAllText(Path.Join(m_directoryPath, hash));
-			return data;
+			throw new PlaygroundDoesntExists();
 		}
 
-		throw new NotebookDoesntExists();
+		PlaygroundData data = new PlaygroundData();
+		data.hash = hash;
+		data.files = ReadDirectory(playgroundPath);
+		
+		return data;
+	}
+
+	private void CreateDirectoryRecursively(string path, string directoriesPath)
+	{
+		string currentPath = path;
+		foreach (var dir in directoriesPath.Split(Path.PathSeparator))
+		{
+			currentPath = Path.Join(currentPath, dir);
+			Directory.CreateDirectory(currentPath);
+		}
+	}
+
+	private Dictionary<string, string> ReadDirectory(string searchPath, string prepend="")
+	{
+		Dictionary<string, string> readFiles = new Dictionary<string, string>();
+
+		foreach (var path in Directory.GetFiles(searchPath))
+		{
+			if (File.Exists(path))
+			{
+				string fileName = Path.GetFileName(path);
+				if (!String.IsNullOrEmpty(path))
+				{
+					fileName = Path.Join(prepend, fileName);
+				}
+
+				readFiles[fileName] = File.ReadAllText(Path.Join(searchPath, fileName));
+			}
+			else if(Directory.Exists(path))
+			{
+				string directoryName = new DirectoryInfo(path).Name;
+				if (!String.IsNullOrEmpty(prepend))
+				{
+					directoryName = Path.Join(prepend, directoryName);
+				}
+				var dict = ReadDirectory(path, directoryName);
+				foreach (var (key, value) in dict)
+				{
+					readFiles.Add(key, value);
+				}
+			}
+		}
+
+		return readFiles;
 	}
 
 	private string m_directoryPath;

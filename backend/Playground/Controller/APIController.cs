@@ -5,53 +5,66 @@ using Playground.Notebook;
 namespace Playground.Controllers;
 
 [ApiController]
-[Route("/api/")]
-public class APIController : Controller
+[Route("/api/[controller]")]
+public class PlaygroundController : ControllerBase
 {
-	public struct HashStruct
-	{
-		public string hash{get;set;}
-	}
+    public PlaygroundController(IPlaygroundRepository playgroundRepository)
+    {
+        m_playgroundRepository = playgroundRepository;
+    }
 
-	public struct CodeStruct
-	{
-		public string code{get;set;}
-	}
-
-	public APIController()
-	{
-		files = new FilesNotebook("files/");
-	}
-
-	[HttpPost("create")]
-	public IActionResult Create(CodeStruct notebook)
-	{
-		var notebookData = files.Create(notebook.code);
-		var resp = new HttpResponseMessage();
-		HashStruct hashStruct = new HashStruct();
-		hashStruct.hash = notebookData.hash;
-
-		return Ok(Json(hashStruct));
-	}
-
-	[HttpGet("{hash}")]
-	public IActionResult GetByHash(string hash)
-	{
+    // GET api/playground/{hash}
+    [HttpGet("{hash}")]
+    public ActionResult<PlaygroundData> Get(string hash)
+    {
 		try
 		{
-			return Ok(files.GetByHash(hash).code);
+			var playgroundData = m_playgroundRepository.GetByHash(hash);
+			return Ok(playgroundData);
 		}
-		catch(NotebookDoesntExists)
+		catch (PlaygroundDoesntExists)
 		{
 			return NotFound();
 		}
-	}
+    }
 
-	[HttpGet("embed/{hash}")]
-	public void GetEmbeddedByHash([FromQuery] string hash)
-	{
+    // POST api/playground
+    [HttpPost]
+    public ActionResult<string> Post([FromBody] PlaygroundData dataToSave)
+    {
+        var savedData = m_playgroundRepository.Save(dataToSave);
+        return Ok(savedData.hash);
+    }
 
-	}
+    // PUT api/playground
+    [HttpPut]
+    public ActionResult Put([FromBody] PlaygroundData dataToUpdate)
+    {
+		try
+		{
+			m_playgroundRepository.Update(dataToUpdate);
+			return Ok();
+		}
+		catch (PlaygroundDoesntExists)
+		{
+			return NotFound();
+		}
+    }
 
-	private FilesNotebook files;
+    // DELETE api/playground/{hash}
+    [HttpDelete("{hash}")]
+    public ActionResult Delete(string hash)
+    {
+		try
+		{
+			m_playgroundRepository.Delete(hash);
+		}
+		catch (PlaygroundDoesntExists)
+		{
+			return NotFound();
+		}
+        return Ok();
+    }
+
+    private readonly IPlaygroundRepository m_playgroundRepository;
 }

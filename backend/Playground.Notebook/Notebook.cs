@@ -3,46 +3,56 @@ using System.Text;
 
 namespace Playground.Notebook;
 
-public struct NotebookData
+public struct PlaygroundData
 {
-	public String code;
-	public String hash;
+	public Dictionary<string, string> files{ get; set; }
+    public string hash{ get; set; }
 
-	public NotebookData()
+	public PlaygroundData()
 	{
-		this.code = "";
+		this.files = new Dictionary<string, string>{};
 		this.hash = "";
 	}
 
-	public NotebookData(string code)
+	public PlaygroundData(Dictionary<string, string> files)
 	{
-		this.code = code;
-		this.hash = GetHash(code);
+		this.files = files;
+		this.hash = "";
+		this.CalculateHash();
 	}
 
-	public static string GetHash(string code)
+	public void CalculateHash()
 	{
+		StringBuilder allCode = new StringBuilder{};
+		allCode.Append(hash);
+		foreach (var (key, value) in files)
+		{
+			allCode.Append(key);
+			allCode.Append(value);
+		}
+
 		using (HashAlgorithm algorithm = SHA256.Create())
 		{
-			byte[] textBytes = System.Text.Encoding.UTF8.GetBytes(code);
+			byte[] textBytes = System.Text.Encoding.UTF8.GetBytes(allCode.ToString());
 			byte[] hashBytes = algorithm.ComputeHash(textBytes);
 
 			string hash = BitConverter
 				.ToString(hashBytes)
 				.Replace("-", String.Empty);
 
-			return hash;
+			this.hash = hash;
 		}
 	}
 }
 
-public class NotebookDoesntExists : Exception
+public class PlaygroundDoesntExists : Exception
 {}
 
-public interface INotebookRepository
+public interface IPlaygroundRepository
 {
-	NotebookData Create(string code);
-	NotebookData GetByHash(string hash);
-	void Edit(NotebookData editedData);
+	PlaygroundData GetByHash(string hash);
+
+	PlaygroundData Save(PlaygroundData dataToSave);
+	void Update(PlaygroundData dataToUpdate);
 	void Delete(string hash);
 }
