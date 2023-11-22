@@ -4,7 +4,7 @@
       "nameLong": "Graphics Playground",
       "applicationName": "graphics-playground",
       "dataFolderName": ".playground",
-      "version": "1.00.0",
+      "version": "^1.84.0",
       "extensionsGallery": {
         "serviceUrl": "https://open-vsx.org/vscode/gallery",
         "itemUrl": "https://open-vsx.org/vscode/item",
