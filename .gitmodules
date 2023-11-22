@@ -1,0 +1,3 @@
+[submodule "wwwroot/extensions/webgl-viewer"]
+	path = wwwroot/extensions/webgl-viewer
+	url = https://github.com/BerezkovN/webgl-viewer.git
