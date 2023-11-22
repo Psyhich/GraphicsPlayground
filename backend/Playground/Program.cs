@@ -17,7 +17,7 @@ if (builder.Environment.IsDevelopment())
 
 app.UseStaticFiles(new StaticFileOptions()
 {
-    FileProvider = new PhysicalFileProvider(Path.Join(Directory.GetCurrentDirectory(), "..", "..", "public")),
+    FileProvider = new PhysicalFileProvider(Path.Join(Directory.GetCurrentDirectory(), "..", "..", "wwwroot")),
     RequestPath = new PathString("")
 });
 
