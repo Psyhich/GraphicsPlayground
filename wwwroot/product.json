@@ -23,8 +23,9 @@
     },
     "additionalBuiltinExtensions": [
       {
-        "scheme": "https",
-        "path": "wwwroot/extensions/webgl-viewer"
+        "scheme": "http",
+        "authority": "localhost:5263",
+        "path": "/extensions/webgl-viewer/"
       }
     ]
   }
