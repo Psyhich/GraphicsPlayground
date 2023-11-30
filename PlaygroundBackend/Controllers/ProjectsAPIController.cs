@@ -1,6 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-
-using Playground.Notebook;
+using Microsoft.AspNetCore.Authorization;
+using Playground.Project;
 
 namespace Playground.Controllers;
 
@@ -8,21 +8,23 @@ namespace Playground.Controllers;
 [Route("/api/[controller]")]
 public class PlaygroundController : ControllerBase
 {
-    public PlaygroundController(IPlaygroundRepository playgroundRepository)
+    public PlaygroundController(IAuthorizationService authorizationService, IProjectRepository playgroundRepository, IPlaygroundUsersRepository usersRepository)
     {
         m_playgroundRepository = playgroundRepository;
+		m_usersRepository = usersRepository;
+		m_authorizationService = authorizationService;
     }
 
     // GET api/playground/{hash}
     [HttpGet("{hash}")]
-    public ActionResult<PlaygroundData> Get(string hash)
+    public ActionResult<ProjectData> Get(string hash)
     {
 		try
 		{
 			var playgroundData = m_playgroundRepository.GetByHash(hash);
 			return Ok(playgroundData);
 		}
-		catch (PlaygroundDoesntExists)
+		catch (ProjectDoesntExists)
 		{
 			return NotFound();
 		}
@@ -30,28 +32,31 @@ public class PlaygroundController : ControllerBase
 
     // POST api/playground
     [HttpPost]
-    public ActionResult<string> Post([FromBody] PlaygroundData dataToSave)
+    public ActionResult<string> Save([FromBody] ProjectData dataToSave)
     {
         var savedData = m_playgroundRepository.Save(dataToSave);
         return Ok(savedData.hash);
     }
 
     // PUT api/playground
+	[Authorize]
     [HttpPut]
-    public ActionResult Put([FromBody] PlaygroundData dataToUpdate)
+    public ActionResult Update([FromBody] ProjectData dataToUpdate)
     {
 		try
 		{
+			m_authorizationService.AuthorizeAsync(User, dataToUpdate.hash, );
 			m_playgroundRepository.Update(dataToUpdate);
 			return Ok();
 		}
-		catch (PlaygroundDoesntExists)
+		catch (ProjectDoesntExists)
 		{
 			return NotFound();
 		}
     }
 
     // DELETE api/playground/{hash}
+	[Authorize]
     [HttpDelete("{hash}")]
     public ActionResult Delete(string hash)
     {
@@ -59,12 +64,14 @@ public class PlaygroundController : ControllerBase
 		{
 			m_playgroundRepository.Delete(hash);
 		}
-		catch (PlaygroundDoesntExists)
+		catch (ProjectDoesntExists)
 		{
 			return NotFound();
 		}
         return Ok();
     }
 
-    private readonly IPlaygroundRepository m_playgroundRepository;
+    private readonly IProjectRepository m_playgroundRepository;
+    private readonly IPlaygroundUsersRepository m_usersRepository;
+    private readonly IAuthorizationService m_authorizationService;
 }

@@ -1,5 +1,11 @@
 using Microsoft.Extensions.FileProviders;
-using Playground.Notebook;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Authentication.OAuth;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+
+using Playground.Controllers;
+using Playground.Data;
 
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
@@ -9,13 +15,22 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 });
 
 string pathToProject = Path.GetFullPath(Path.Join(builder.Environment.WebRootPath, ".."));
-Console.WriteLine(pathToProject);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSingleton<IPlaygroundRepository>(
+builder.Services.AddSingleton<IProjectRepository>(
 	provider => new FilesPlayground(Path.Join(pathToProject, "playgrounds"))
 );
+if (!builder.Environment.IsDevelopment())
+{
+	builder.Services
+		.AddAuthentication()
+		.AddGitHub(options =>
+			{
+				options.ClientId = Environment.GetEnvironmentVariable("GitHub:ClientId") ?? string.Empty;
+				options.ClientSecret = Environment.GetEnvironmentVariable("GitHub:ClientSecret") ?? string.Empty;
+			});
+}
 
 var app = builder.Build();
 

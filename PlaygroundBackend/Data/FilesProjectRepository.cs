@@ -1,8 +1,9 @@
 using System.Text;
+using Playground.Models;
 
-namespace Playground.Notebook;
+namespace Playground.Data;
 
-public class FilesPlayground : IPlaygroundRepository
+public class FilesPlayground : IProjectRepository
 {
 	public FilesPlayground(string directoryPath)
 	{
@@ -10,7 +11,7 @@ public class FilesPlayground : IPlaygroundRepository
 		Directory.CreateDirectory(directoryPath);
 	}
 
-	public PlaygroundData Save(PlaygroundData data)
+	public ProjectData Save(ProjectData data)
 	{
 		string playgroundPath = "";
 		do
@@ -45,16 +46,16 @@ public class FilesPlayground : IPlaygroundRepository
 		}
 		else
 		{
-			throw new PlaygroundDoesntExists();
+			throw new ProjectDoesntExists();
 		}
 	}
 
-	public void Update(PlaygroundData editedData)
+	public void Update(ProjectData editedData)
 	{
 		string playgroundPath = Path.Join(m_directoryPath, editedData.hash);
 		if(!Path.Exists(playgroundPath))
 		{
-			throw new PlaygroundDoesntExists();
+			throw new ProjectDoesntExists();
 		}
 
 		foreach (var (fileName, code) in editedData.files)
@@ -63,15 +64,15 @@ public class FilesPlayground : IPlaygroundRepository
 		}
 	}
 
-	public PlaygroundData GetByHash(string hash)
+	public ProjectData GetByHash(string hash)
 	{
 		string playgroundPath = Path.Join(m_directoryPath, hash); 
 		if (!Path.Exists(playgroundPath))
 		{
-			throw new PlaygroundDoesntExists();
+			throw new ProjectDoesntExists();
 		}
 
-		PlaygroundData data = new PlaygroundData();
+		ProjectData data = new ProjectData();
 		data.hash = hash;
 		data.files = ReadDirectory(playgroundPath);
 		
