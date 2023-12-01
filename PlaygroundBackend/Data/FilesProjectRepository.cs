@@ -3,35 +3,36 @@ using Playground.Models;
 
 namespace Playground.Data;
 
-public class FilesPlayground : IProjectRepository
+public class ProjectsRepository : IProjectRepository
 {
-	public FilesPlayground(string directoryPath)
+	public ProjectsRepository(string directoryPath)
 	{
 		m_directoryPath = directoryPath;
 		Directory.CreateDirectory(directoryPath);
+		Console.WriteLine($"Created: {directoryPath}");
 	}
 
 	public ProjectData Save(ProjectData data)
 	{
-		string playgroundPath = "";
+		string projectPath = "";
 		do
 		{
 			data.CalculateHash();
-			playgroundPath = Path.Join(m_directoryPath, data.hash);
+			projectPath = Path.Join(m_directoryPath, data.hash);
 
-		} while(Path.Exists(playgroundPath));
+		} while(Path.Exists(projectPath));
 
-		Directory.CreateDirectory(playgroundPath);
+		Directory.CreateDirectory(projectPath);
 		foreach (var (name, code) in data.files)
 		{
 			if (name.Contains("/"))
 			{
 				int lastSeparator = name.LastIndexOf("/");
 				string dirs = name.Substring(0, lastSeparator);
-				CreateDirectoryRecursively(playgroundPath, dirs);
+				CreateDirectoryRecursively(projectPath, dirs);
 			}
 
-			File.WriteAllBytes(Path.Join(playgroundPath, name),
+			File.WriteAllBytes(Path.Join(projectPath, name),
 				Encoding.UTF8.GetBytes(code));
 		}
 
@@ -52,29 +53,29 @@ public class FilesPlayground : IProjectRepository
 
 	public void Update(ProjectData editedData)
 	{
-		string playgroundPath = Path.Join(m_directoryPath, editedData.hash);
-		if(!Path.Exists(playgroundPath))
+		string projectPath = Path.Join(m_directoryPath, editedData.hash);
+		if(!Path.Exists(projectPath))
 		{
 			throw new ProjectDoesntExists();
 		}
 
 		foreach (var (fileName, code) in editedData.files)
 		{
-			File.WriteAllBytes(Path.Join(playgroundPath, fileName), Encoding.UTF8.GetBytes(code));
+			File.WriteAllBytes(Path.Join(projectPath, fileName), Encoding.UTF8.GetBytes(code));
 		}
 	}
 
 	public ProjectData GetByHash(string hash)
 	{
-		string playgroundPath = Path.Join(m_directoryPath, hash); 
-		if (!Path.Exists(playgroundPath))
+		string projectPath = Path.Join(m_directoryPath, hash); 
+		if (!Path.Exists(projectPath))
 		{
 			throw new ProjectDoesntExists();
 		}
 
 		ProjectData data = new ProjectData();
 		data.hash = hash;
-		data.files = ReadDirectory(playgroundPath);
+		data.files = ReadDirectory(projectPath);
 		
 		return data;
 	}
@@ -89,34 +90,34 @@ public class FilesPlayground : IProjectRepository
 		}
 	}
 
-	private Dictionary<string, string> ReadDirectory(string searchPath, string prepend="")
+	private Dictionary<string, string> ReadDirectory(string searchPath, string append="")
 	{
+		string fullSearchPath = Path.Join(searchPath, append);
 		Dictionary<string, string> readFiles = new Dictionary<string, string>();
 
-		foreach (var path in Directory.GetFiles(searchPath))
+		foreach (var path in Directory.GetFiles(fullSearchPath))
 		{
-			if (File.Exists(path))
+			string fileName = Path.GetFileName(path);
+			if (!String.IsNullOrEmpty(path))
 			{
-				string fileName = Path.GetFileName(path);
-				if (!String.IsNullOrEmpty(path))
-				{
-					fileName = Path.Join(prepend, fileName);
-				}
-
-				readFiles[fileName] = File.ReadAllText(Path.Join(searchPath, fileName));
+				fileName = Path.Join(append, fileName);
 			}
-			else if(Directory.Exists(path))
+
+			readFiles[fileName] = File.ReadAllText(Path.Join(searchPath, fileName));
+		}
+
+		foreach (var path in Directory.GetDirectories(fullSearchPath))
+		{
+			string directoryName = new DirectoryInfo(path).Name;
+			Console.WriteLine($"Found {directoryName} dir in {searchPath}/{append}");
+			if (!String.IsNullOrEmpty(append))
 			{
-				string directoryName = new DirectoryInfo(path).Name;
-				if (!String.IsNullOrEmpty(prepend))
-				{
-					directoryName = Path.Join(prepend, directoryName);
-				}
-				var dict = ReadDirectory(path, directoryName);
-				foreach (var (key, value) in dict)
-				{
-					readFiles.Add(key, value);
-				}
+				directoryName = Path.Join(append, directoryName);
+			}
+			var dict = ReadDirectory(searchPath, directoryName);
+			foreach (var (key, value) in dict)
+			{
+				readFiles.Add(key, value);
 			}
 		}
 
