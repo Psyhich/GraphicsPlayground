@@ -1,12 +1,9 @@
 using Microsoft.Extensions.FileProviders;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Authentication.OAuth;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 
-using Playground.Controllers;
 using Playground.Data;
-
+using Playground.Services;
 
 var builder = WebApplication.CreateBuilder(new WebApplicationOptions
 {
@@ -14,26 +11,44 @@ var builder = WebApplication.CreateBuilder(new WebApplicationOptions
     WebRootPath = WebApplication.CreateBuilder(args).Configuration.GetValue<string>("webroot") != null ? WebApplication.CreateBuilder(args).Configuration.GetValue<string>("webroot") : "website"
 });
 
-string pathToProject = Path.GetFullPath(Path.Join(builder.Environment.WebRootPath, ".."));
-
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSingleton<IProjectRepository>(
-	provider => new FilesPlayground(Path.Join(pathToProject, "playgrounds"))
-);
+
+// AUTHORIZATION/AUTHENTICATION
 if (!builder.Environment.IsDevelopment())
 {
 	builder.Services
 		.AddAuthentication()
 		.AddGitHub(options =>
 			{
-				options.ClientId = Environment.GetEnvironmentVariable("GitHub:ClientId") ?? string.Empty;
-				options.ClientSecret = Environment.GetEnvironmentVariable("GitHub:ClientSecret") ?? string.Empty;
+				options.ClientId = Environment.GetEnvironmentVariable("GITHUB_CLIENT_ID") ?? string.Empty;
+				options.ClientSecret = Environment.GetEnvironmentVariable("GITHUB_CLIENT_ID") ?? string.Empty;
 			});
+}
+else
+{
+	builder.Services.AddAuthentication().AddCookie();
+}
+
+builder.Services.AddSingleton<IAuthorizationHandler, UserAuthorizationHandler>();
+builder.Services.AddSingleton<IAuthorizationHandler, ProjectAuthorizationHandler>();
+
+// REPOSITORIES
+string pathToProject = Path.GetFullPath(Path.Join(builder.Environment.WebRootPath, ".."));
+builder.Services.AddSingleton<IProjectRepository>(
+	provider => new ProjectsRepository(Path.Join(pathToProject, "playgrounds"))
+);
+builder.Services.AddSingleton<IPlaygroundUsersRepository, InMemoryUsersRepository>();
+
+// ENABLE SWAGGER IF DEVELOPMENT
+if (builder.Environment.IsDevelopment())
+{
+	builder.Services.AddSwaggerGen();
 }
 
 var app = builder.Build();
 
+// ENABLE node_modules IF DEVELOPMENT
 if (builder.Environment.IsDevelopment())
 {
 	app.UseDeveloperExceptionPage();

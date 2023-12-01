@@ -1,28 +1,30 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
-using Playground.Project;
+
+using Playground.Data;
+using Playground.Models;
+using Playground.Services;
 
 namespace Playground.Controllers;
 
 [ApiController]
-[Route("/api/[controller]")]
-public class PlaygroundController : ControllerBase
+[Route("/api/projects/")]
+public class ProjectController : ControllerBase
 {
-    public PlaygroundController(IAuthorizationService authorizationService, IProjectRepository playgroundRepository, IPlaygroundUsersRepository usersRepository)
+    public ProjectController(IAuthorizationService authorizationService, IProjectRepository projectRepository)
     {
-        m_playgroundRepository = playgroundRepository;
-		m_usersRepository = usersRepository;
+        m_projectRepository = projectRepository;
 		m_authorizationService = authorizationService;
     }
 
-    // GET api/playground/{hash}
+    // GET api/project/{hash}
     [HttpGet("{hash}")]
     public ActionResult<ProjectData> Get(string hash)
     {
 		try
 		{
-			var playgroundData = m_playgroundRepository.GetByHash(hash);
-			return Ok(playgroundData);
+			var projectData = m_projectRepository.GetByHash(hash);
+			return Ok(projectData);
 		}
 		catch (ProjectDoesntExists)
 		{
@@ -30,24 +32,27 @@ public class PlaygroundController : ControllerBase
 		}
     }
 
-    // POST api/playground
+    // POST api/project
     [HttpPost]
     public ActionResult<string> Save([FromBody] ProjectData dataToSave)
     {
-        var savedData = m_playgroundRepository.Save(dataToSave);
+        var savedData = m_projectRepository.Save(dataToSave);
         return Ok(savedData.hash);
     }
 
-    // PUT api/playground
-	[Authorize]
+    // PUT api/project
     [HttpPut]
-    public ActionResult Update([FromBody] ProjectData dataToUpdate)
+	async public Task<ActionResult> Update([FromBody] ProjectData dataToUpdate)
     {
 		try
 		{
-			m_authorizationService.AuthorizeAsync(User, dataToUpdate.hash, );
-			m_playgroundRepository.Update(dataToUpdate);
-			return Ok();
+			var authorizationRes = await m_authorizationService.AuthorizeAsync(User, dataToUpdate.hash, new SameAuthorRequirement());
+			if (authorizationRes.Succeeded)
+			{
+				m_projectRepository.Update(dataToUpdate);
+				return Ok();
+			}
+			return Forbid();
 		}
 		catch (ProjectDoesntExists)
 		{
@@ -55,23 +60,26 @@ public class PlaygroundController : ControllerBase
 		}
     }
 
-    // DELETE api/playground/{hash}
-	[Authorize]
+    // DELETE api/project/{hash}
     [HttpDelete("{hash}")]
-    public ActionResult Delete(string hash)
+    async public Task<ActionResult> Delete(string hash)
     {
 		try
 		{
-			m_playgroundRepository.Delete(hash);
+			var authorizationRes = await m_authorizationService.AuthorizeAsync(User, hash, new SameAuthorRequirement());
+			if (authorizationRes.Succeeded)
+			{
+				m_projectRepository.Delete(hash);
+				return Ok();
+			}
+			return Forbid();
 		}
 		catch (ProjectDoesntExists)
 		{
 			return NotFound();
 		}
-        return Ok();
     }
 
-    private readonly IProjectRepository m_playgroundRepository;
-    private readonly IPlaygroundUsersRepository m_usersRepository;
+    private readonly IProjectRepository m_projectRepository;
     private readonly IAuthorizationService m_authorizationService;
 }

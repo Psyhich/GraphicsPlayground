@@ -9,7 +9,6 @@ public class ProjectsRepository : IProjectRepository
 	{
 		m_directoryPath = directoryPath;
 		Directory.CreateDirectory(directoryPath);
-		Console.WriteLine($"Created: {directoryPath}");
 	}
 
 	public ProjectData Save(ProjectData data)
@@ -109,7 +108,6 @@ public class ProjectsRepository : IProjectRepository
 		foreach (var path in Directory.GetDirectories(fullSearchPath))
 		{
 			string directoryName = new DirectoryInfo(path).Name;
-			Console.WriteLine($"Found {directoryName} dir in {searchPath}/{append}");
 			if (!String.IsNullOrEmpty(append))
 			{
 				directoryName = Path.Join(append, directoryName);

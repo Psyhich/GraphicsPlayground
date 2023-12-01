@@ -2,8 +2,7 @@
 
 namespace Playground.Data;
 
-public class ProjectDoesntExists : Exception
-{}
+public class ProjectDoesntExists : Exception;
 
 public interface IProjectRepository
 {
