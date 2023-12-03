@@ -5,20 +5,16 @@ namespace Playground.Models;
 
 public struct ProjectData
 {
-	public Dictionary<string, string> files{ get; set; }
-    public string hash{ get; set; }
-
-	public ProjectData()
-	{
-		this.files = new Dictionary<string, string>{};
-		this.hash = "";
-	}
+	public Dictionary<string, string> files{ get; set; } = new Dictionary<string, string>();
+	public string name { get; set; } = "";
+	public string? description { get; set; } = "";
+    public string? hash{ get; set; } = "";
+	public byte[]? thumbnail { get; set; } = {};
 
 	public ProjectData(Dictionary<string, string> files)
 	{
 		this.files = files;
-		this.hash = "";
-		this.CalculateHash();
+		CalculateHash();
 	}
 
 	public void CalculateHash()
@@ -44,4 +40,3 @@ public struct ProjectData
 		}
 	}
 }
-

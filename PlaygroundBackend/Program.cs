@@ -1,6 +1,5 @@
 using Microsoft.Extensions.FileProviders;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 
 using Playground.Data;
 using Playground.Services;
@@ -64,10 +63,13 @@ app.UseFileServer(new FileServerOptions
     FileProvider = new PhysicalFileProvider(
         Path.Combine(builder.Environment.WebRootPath)),
     RequestPath = "",
-    EnableDefaultFiles = true,
-    DefaultFilesOptions = { DefaultFileNames = new[] { "index.html" } }
+    EnableDefaultFiles = false,
 });
-
 app.UseRouting();
 app.MapControllers();
+app.MapControllerRoute(
+	name: "default",
+	pattern: "{controller=Home}/{action=Index}"
+);
+
 app.Run();
