@@ -1,20 +1,25 @@
 <div class="col-md-4">
 	<a href="projects/@Model.hash" class="text-decoration-none">
-    <div class="card image-tile">
-		@{
-			if (Model.thumbnail != null)
-			{
-				<img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.thumbnail)" class="card-img-top" alt="Image of @Model.name">
+		<div class="card image-tile">
+			@{
+				if (Model.thumbnail != null)
+				{
+					<img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.thumbnail)" class="card-img-top" alt="Image of @Model.name">
+				}
+				else
+				{
+					<img src="" class="card-img-top" alt="No thumbnail">
+				}
 			}
-			else
-			{
-				<img src="" class="card-img-top" alt="No thumbnail">
-			}
-		}
-        <div class="card-body">
-            <h5 class="card-title">@Model.name</h5>
-            <p class="card-text">@Model.description</p>
-        </div>
-    </div>
+			<div class="card-body">
+				<h5 class="card-title">@Model.name</h5>
+				@{
+					if (Model.description != null)
+					{
+						<p class="card-text">@Model.description</p>
+					}
+				}
+			</div>
+		</div>
 	</a>
 </div>
