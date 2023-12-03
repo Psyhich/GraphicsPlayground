@@ -1,11 +1,19 @@
 using Microsoft.AspNetCore.Mvc;
+using Playground.Data;
 
-class HomeController : Controller
+namespace Playground.Services;
+
+public class HomeController : Controller
 {
-	[Route("")]
+	public HomeController(IProjectRepository projectsRepository)
+	{
+		m_projectsRepository = projectsRepository;
+	}
+
     public ActionResult Index()
     {
-		Console.WriteLine("Request index");
-		return View("~/Views/index.cshtml");
+		return View("~/Views/index.cshtml", m_projectsRepository.GetProjectsSince(DateTime.Now.AddMonths(-1)));
 	}
+
+	private readonly IProjectRepository m_projectsRepository;
 }

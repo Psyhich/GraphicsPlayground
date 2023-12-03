@@ -44,6 +44,7 @@ if (builder.Environment.IsDevelopment())
 {
 	builder.Services.AddSwaggerGen();
 }
+builder.Services.AddMvc();
 
 var app = builder.Build();
 
@@ -51,20 +52,21 @@ var app = builder.Build();
 if (builder.Environment.IsDevelopment())
 {
 	app.UseDeveloperExceptionPage();
-    app.UseStaticFiles(new StaticFileOptions()
-    {
-		FileProvider = new PhysicalFileProvider(Path.Join(pathToProject, "node_modules")),
-		RequestPath = new PathString("/node_modules")
-    });
+	app.UseStaticFiles(new StaticFileOptions()
+		{
+			FileProvider = new PhysicalFileProvider(Path.Join(pathToProject, "node_modules")),
+			RequestPath = new PathString("/node_modules")
+		});
 }
 
 app.UseFileServer(new FileServerOptions
 {
-    FileProvider = new PhysicalFileProvider(
-        Path.Combine(builder.Environment.WebRootPath)),
-    RequestPath = "",
-    EnableDefaultFiles = false,
+	FileProvider = new PhysicalFileProvider(
+		Path.Combine(builder.Environment.WebRootPath)),
+	RequestPath = "",
+	EnableDefaultFiles = false,
 });
+
 app.UseRouting();
 app.MapControllers();
 app.MapControllerRoute(
