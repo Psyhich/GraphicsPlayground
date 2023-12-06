@@ -54,7 +54,7 @@ if (builder.Environment.IsDevelopment())
 	app.UseDeveloperExceptionPage();
 	app.UseStaticFiles(new StaticFileOptions()
 		{
-			FileProvider = new PhysicalFileProvider(Path.Join(pathToProject, "node_modules")),
+			FileProvider = new PhysicalFileProvider(Path.Join(pathToProject, "PlaygroundFrontend", "node_modules")),
 			RequestPath = new PathString("/node_modules")
 		});
 }

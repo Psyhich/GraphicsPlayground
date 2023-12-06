@@ -35,7 +35,7 @@ public class ProjectsRepository : IProjectRepository
 		}
 		if (data.thumbnail != null && data.thumbnail.Length > 0)
 		{
-			File.WriteAllBytes(Path.Join(projectPath, THUMBNAIL_FILE), data.thumbnail);
+			File.WriteAllText(Path.Join(projectPath, THUMBNAIL_FILE), data.thumbnail);
 		}
 
 		return data;
@@ -98,7 +98,7 @@ public class ProjectsRepository : IProjectRepository
 		}
 		if (File.Exists(Path.Join(projectPath, THUMBNAIL_FILE)))
 		{
-			data.thumbnail = File.ReadAllBytes(Path.Join(projectPath, THUMBNAIL_FILE));
+			data.thumbnail = File.ReadAllText(Path.Join(projectPath, THUMBNAIL_FILE));
 		}
 		
 		return data;

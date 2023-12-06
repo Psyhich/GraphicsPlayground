@@ -36,6 +36,14 @@ public class ProjectController : ControllerBase
     [HttpPost]
     public ActionResult<string> Save([FromBody] ProjectData dataToSave)
     {
+		if (dataToSave.thumbnail != null
+			&& dataToSave.thumbnail.Length != 0)
+		{
+			if (!dataToSave.thumbnail.StartsWith("data:image/jpeg;base64"))
+			{
+				return BadRequest();
+			}
+		}
         var savedData = m_projectRepository.Save(dataToSave);
         return Ok(savedData.hash);
     }

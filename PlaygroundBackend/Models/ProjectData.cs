@@ -9,7 +9,12 @@ public struct ProjectData
 	public string name { get; set; } = "";
 	public string? description { get; set; } = "";
     public string? hash{ get; set; } = "";
-	public byte[]? thumbnail { get; set; } = {};
+	public string? thumbnail { get; set; } = null;
+
+	public ProjectData()
+	{
+		this.files = new Dictionary<string, string>();
+	}
 
 	public ProjectData(Dictionary<string, string> files)
 	{

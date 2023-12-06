@@ -1,10 +1,10 @@
 <div class="col-md-4">
-	<a href="projects/@Model.hash" class="text-decoration-none">
+	<a href="/editor/@Model.hash" class="text-decoration-none">
 		<div class="card image-tile">
 			@{
 				if (Model.thumbnail != null)
 				{
-					<img src="data:image/jpeg;base64,@Convert.ToBase64String(Model.thumbnail)" class="card-img-top" alt="Image of @Model.name">
+					<img src="@Model.thumbnail" class="card-img-top" alt="Image of @Model.name">
 				}
 				else
 				{
