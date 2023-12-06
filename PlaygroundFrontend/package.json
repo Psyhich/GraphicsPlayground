@@ -1,0 +1,23 @@
+{
+  "name": "graphics-playground",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "start": "dotnet run --project backend/Playground/"
+  },
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "ace-builds": "^1.32.0",
+    "axios": "^1.6.2",
+    "js-treeview": "^1.1.5",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "devDependencies": {
+    "copy-webpack-plugin": "^11.0.0",
+    "css-loader": "^6.8.1",
+    "html-webpack-plugin": "^5.5.3",
+    "style-loader": "^3.3.3"
+  }
+}

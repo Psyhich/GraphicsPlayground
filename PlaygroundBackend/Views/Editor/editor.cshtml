@@ -1,0 +1,56 @@
+@using System;
+@using System.Collections.Generic;
+@using System.Linq;
+@using System.Text.Encodings.Web;
+@using Microsoft.AspNetCore.Html;
+@using System.Text.Unicode;
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+		<link rel="stylesheet" href="/css/index.css">
+		@{
+			if (!string.IsNullOrEmpty(@Model.name))
+			{
+				<title>@Model.name</title>
+			}
+			else
+			{
+				<title>New project</title>
+			}
+		}
+	</head>
+	<body>
+		<div class="container">
+			<div class="row mb-3">
+				<canvas id="view" class="col-md-8" style="width: 600px; height: 100%;"></canvas>
+				<div class="col-md-2">
+					<button id="saveBtn" class="btn btn-primary mt-2">Save</button>
+					<button id="executeBtn" class="btn btn-success mt-2">Execute</button>
+					<button id="saveThumbnailBtn" class="btn btn-warning mt-2">Save Thumbnail</button>
+				</div>
+			</div>
+			<div class="row">
+				<div id="editor-container" class="col-md-11 vh-100 overflow-y">
+					<div id="editor"></div>
+				</div>
+			</div>
+		</div>
+	</body>
+	<script src="/js/bundle.js" type="text/javascript"></script>
+		@{
+			string fileData = "";
+			foreach (var val in Model.files.Values)
+			{
+				fileData = val;
+				break;
+			}
+		}
+		@if (!string.IsNullOrEmpty(fileData))
+		{
+			<script type="text/javascript" defer>document.aceEditor.setValue(`@Html.Raw(fileData.Replace("`", "\\`"))`);</script>
+		}
+</html>
