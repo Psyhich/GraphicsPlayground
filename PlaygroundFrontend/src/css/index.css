@@ -1,12 +1,6 @@
 body {
   margin: 0;
   height: 100vh;
-  overflow: hidden;
-}
-
-#file-tree {
-  height: 100%;
-  overflow: auto;
 }
 
 #editor {
