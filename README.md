@@ -20,7 +20,7 @@ To build and start the server immediately
 To build frontend you need to run:
 ```bash
     cd PlaygroundFrontend
-    npm install && npm build
+    npm install && npm run build
 ```
 
 After running backend and building frontend you can host your server
