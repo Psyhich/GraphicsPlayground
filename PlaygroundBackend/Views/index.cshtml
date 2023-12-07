@@ -48,7 +48,7 @@
 
 			<div class="row">
 				@{ var projects = ViewData["projects"] as List<ProjectData>; }
-				@if (project != null)
+				@if (projects != null)
 				{
 					@foreach (var project in projects)
 					{
