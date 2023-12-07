@@ -48,9 +48,12 @@
 
 			<div class="row">
 				@{ var projects = ViewData["projects"] as List<ProjectData>; }
-				@foreach (var project in projects)
+				@if (project != null)
 				{
-					@await Html.PartialAsync("~/Views/Projects/card.cshtml", project)
+					@foreach (var project in projects)
+					{
+						@await Html.PartialAsync("~/Views/Projects/card.cshtml", project)
+					}
 				}
 			</div>
 		</div>
