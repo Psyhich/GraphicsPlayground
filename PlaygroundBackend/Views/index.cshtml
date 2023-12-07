@@ -1,14 +1,10 @@
 @using Playground.Models
-@model List<ProjectData>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 	<head>
-		<meta charset="UTF-8">
-		<meta name="viewport" content="width=device-width, initial-scale=1.0">
-		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+		@await Html.PartialAsync("~/Views/Common/Header.cshtml")
 		<title>Graphics Playground</title>
-		<link rel="icon" href="images/icon.svg" type="image/svg+xml">
 		<style>
 			.image-tile
 			{
@@ -18,31 +14,47 @@
 	</head>
 	<body>
 		<div class="container">
-			<h1 class="mt-5 mb-4">
-				Graphics Playground
-			</h1>
+			@await Html.PartialAsync("~/Views/Common/NavBar.cshtml")
 
-			<div class="jumbotron mb-4">
-				<div class="row">
-					<div class="col-md-8">
-						<img src="https://via.placeholder.com/400x200" class="card-img-top" alt="Header Image">
-					</div>
-					<div class="col-md-4">
-						A brief description of the third caption.
+			@{ ProjectData? featured = ViewData["featured"] as ProjectData?;}
+			@if (featured != null)
+			{
+				<div class="jumbotron mb-4">
+					<div class="row">
+						<div class="col-md-6">
+							@if (featured?.thumbnail != null)
+							{
+								<a href="/editor/@featured?.hash" class="text-decoration-none">
+									<img src="@featured?.thumbnail" class="card-img-top border" alt="Image of @featured?.name">
+								</a>
+							}
+						</div>
+						<div class="col-md-4 text-decoration-none text-light">
+							<h3 class="col-md-4">
+								<a class="text-decoration-none text-light" href="/editor/@featured?.hash">
+									@featured?.name
+								</a>
+							</h3>
+							@if(!string.IsNullOrEmpty(featured?.description))
+							{
+								<a class="text-decoration-none text-light" href="/editor/@featured?.hash">
+									@featured?.description
+								</a>
+							}
+						</div>
 					</div>
 				</div>
-			</div>
+			}
 
 			<div class="row">
-				@foreach (var project in Model)
+				@{ var projects = ViewData["projects"] as List<ProjectData>; }
+				@foreach (var project in projects)
 				{
 					@await Html.PartialAsync("~/Views/Projects/card.cshtml", project)
 				}
 			</div>
-
-
-		<script src="https://cdn.jsdelivr.net/npm/@@popperjs/core@@2.11.6/dist/umd/popper.min.js"></script>
-		<script src="https://cdn.jsdelivr.net/npm/bootstrap@@5.3.2/dist/js/bootstrap.min.js" integrity="sha384-BBtl+eGJRgqQAUMxJ7pMwbEyER4l1g+O15P+16Ep7Q9Q+zqX6gSbd85u4mG4QzX+" crossorigin="anonymous"></script>
+		</div>
+		@await Html.PartialAsync("~/Views/Common/Scripts.cshtml")
 	</body>
 </html>
 

@@ -12,7 +12,18 @@ public class HomeController : Controller
 
     public ActionResult Index()
     {
-		return View("~/Views/index.cshtml", m_projectsRepository.GetProjectsSince(DateTime.Now.AddMonths(-1)));
+		var projects = m_projectsRepository.GetProjectsSince(DateTime.Now.AddMonths(-1));
+		if (projects.Count > 0)
+		{
+			ViewData["featured"] = projects[0]; 
+			projects.RemoveAt(0);
+		}
+		else
+		{
+			ViewData["featured"] = null;
+		}
+		ViewData["projects"] = projects;
+		return View("~/Views/index.cshtml");
 	}
 
 	private readonly IProjectRepository m_projectsRepository;

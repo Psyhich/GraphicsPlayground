@@ -1,14 +1,14 @@
 <div class="col-md-4">
-	<a href="/editor/@Model.hash" class="text-decoration-none">
+	<a href="/editor/@Model.hash" class="text-decoration-none text-light">
 		<div class="card image-tile">
 			@{
 				if (Model.thumbnail != null)
 				{
-					<img src="@Model.thumbnail" class="card-img-top" alt="Image of @Model.name">
+					<img src="@Model.thumbnail" class="card-img-top border" alt="Image of @Model.name">
 				}
 				else
 				{
-					<img src="" class="card-img-top" alt="No thumbnail">
+					<img class="card-img-top" alt="No thumbnail">
 				}
 			}
 			<div class="card-body">

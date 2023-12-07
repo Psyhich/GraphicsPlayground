@@ -13,7 +13,7 @@ document.aceEditor = ace.edit("editor", {
 document.aceEditor.session.setMode("ace/mode/javascript");
 
 var canvas = document.getElementById('view');
-var gl = canvas.getContext('webgl');
+var gl = canvas.getContext('webgl', {preserveDrawingBuffer: true});
 
 if (!gl)
 {
@@ -61,5 +61,5 @@ document.getElementById('executeBtn').addEventListener('click',
 document.getElementById('saveThumbnailBtn').addEventListener('click',
 	function ()
 	{
-		thumbnailData = canvas.toDataURL('image/jpeg', 0.8)
+		thumbnailData = canvas.toDataURL();
 	});

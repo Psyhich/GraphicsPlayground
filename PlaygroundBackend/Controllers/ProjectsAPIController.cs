@@ -39,7 +39,7 @@ public class ProjectController : ControllerBase
 		if (dataToSave.thumbnail != null
 			&& dataToSave.thumbnail.Length != 0)
 		{
-			if (!dataToSave.thumbnail.StartsWith("data:image/jpeg;base64"))
+			if (!dataToSave.thumbnail.StartsWith("data:image/"))
 			{
 				return BadRequest();
 			}
