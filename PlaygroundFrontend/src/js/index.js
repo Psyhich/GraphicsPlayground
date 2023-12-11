@@ -71,7 +71,6 @@ var time = 0;
 function drawAnimation(now) {
 
 	if (processID != processInfo.processID) {
-		console.log("Exited from " + processID);
 		return;
 	}
 	
@@ -88,10 +87,8 @@ drawAnimation(0);
 
 			processInfo.processID += 1;
 			setTimeout(function() {
-				console.log(JSON.stringify(processInfo));
 				var processID = processInfo.processID;
 				eval(evalString);
-				console.log("TIMEOUT EXECUTED")
 			}, 0)
 			
 		} catch (error)
