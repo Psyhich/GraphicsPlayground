@@ -23,34 +23,31 @@
 		<div class="container">
 			@await Html.PartialAsync("~/Views/Common/NavBar.cshtml")
 
-			<div class="row mb-3">
-				<canvas id="view" class="col-md-8 border" style="width: 600px; height: 100%;"></canvas>
+			<div class="row mb-8">
+				<canvas id="view" class="col-md-10 border"></canvas>
 				<div class="col-md-2">
 					<button id="saveBtn" class="btn btn-primary mt-2">Save</button>
 					<button id="executeBtn" class="btn btn-success mt-2">Execute</button>
 					<button id="saveThumbnailBtn" class="btn btn-warning mt-2">Save Thumbnail</button>
 				</div>
 			</div>
-			<div class="row">
-				<div id="editor-container" class="col-md-11 vh-100">
-					<div id="editor"></div>
-				</div>
+			<div class="row mb-3">
+				<div id="main_editor" class="col-md-6 vh-100"></div>
+				<div id="animation_editor" class="col-md-6 vh-100"></div>
 			</div>
 		</div>
 	</body>
 
 	@await Html.PartialAsync("~/Views/Common/Scripts.cshtml")
 	<script src="/js/bundle.js" type="text/javascript"></script>
-		@{
-			string fileData = "";
-			foreach (var val in Model.files.Values)
-			{
-				fileData = val;
-				break;
-			}
-		}
-		@if (!string.IsNullOrEmpty(fileData))
+		@if (Model.files.ContainsKey("main.js"))
 		{
-			<script type="text/javascript" defer>document.aceEditor.setValue(`@Html.Raw(fileData.Replace("`", "\\`"))`);</script>
+			string mainFile = Model.files["main.js"];
+			<script type="text/javascript" defer>document.mainAceEditor.setValue(`@Html.Raw(mainFile.Replace("`", "\\`"))`);</script>
+		}
+		@if (Model.files.ContainsKey("animation.js"))
+		{
+			string animateFile = Model.files["animation.js"];
+			<script type="text/javascript" defer>document.animationAceEditor.setValue(`@Html.Raw(animateFile.Replace("`", "\\`"))`);</script>
 		}
 </html>

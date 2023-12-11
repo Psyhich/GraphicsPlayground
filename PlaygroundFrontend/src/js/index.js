@@ -3,14 +3,22 @@ import 'ace-builds/src-noconflict/mode-javascript';
 import 'ace-builds/src-noconflict/theme-monokai';
 import axios from 'axios';
 
-document.aceEditor = ace.edit("editor", {
+document.mainAceEditor = ace.edit("main_editor", {
 	theme: "ace/theme/monokai",
 	mode: "ace/mode/javascript",
 	autoScrollEditorIntoView: true,
 	maxLines: 30,
 	minLines: 100,
 });
-document.aceEditor.session.setMode("ace/mode/javascript");
+document.mainAceEditor.session.setMode("ace/mode/javascript");
+document.animationAceEditor = ace.edit("animation_editor", {
+	theme: "ace/theme/monokai",
+	mode: "ace/mode/javascript",
+	autoScrollEditorIntoView: true,
+	maxLines: 30,
+	minLines: 100,
+});
+document.animationAceEditor.session.setMode("ace/mode/javascript");
 
 var canvas = document.getElementById('view');
 var gl = canvas.getContext('webgl', {preserveDrawingBuffer: true});
