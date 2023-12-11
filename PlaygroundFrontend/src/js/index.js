@@ -6,17 +6,17 @@ import axios from 'axios';
 document.mainAceEditor = ace.edit("main_editor", {
 	theme: "ace/theme/monokai",
 	mode: "ace/mode/javascript",
-	autoScrollEditorIntoView: true,
+	autoScrollEditorIntoView: false,
 	maxLines: 30,
-	minLines: 100,
+	minLines: 30,
 });
 document.mainAceEditor.session.setMode("ace/mode/javascript");
 document.animationAceEditor = ace.edit("animation_editor", {
 	theme: "ace/theme/monokai",
 	mode: "ace/mode/javascript",
-	autoScrollEditorIntoView: true,
+	autoScrollEditorIntoView: false,
 	maxLines: 30,
-	minLines: 100,
+	minLines: 30,
 });
 document.animationAceEditor.session.setMode("ace/mode/javascript");
 
