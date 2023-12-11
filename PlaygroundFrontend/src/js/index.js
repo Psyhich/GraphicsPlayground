@@ -67,6 +67,7 @@ document.getElementById('executeBtn').addEventListener('click',
 			var evalString = document.mainAceEditor.getValue() + 
 `
 var then = 0;
+var time = 0;
 function drawAnimation(now) {
 
 	if (processID != processInfo.processID) {
@@ -75,6 +76,7 @@ function drawAnimation(now) {
 	}
 	
 	var deltaTime = now - then;
+	time += deltaTime;
 `
 + document.animationAceEditor.getValue() + 
 `
