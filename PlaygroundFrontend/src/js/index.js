@@ -29,6 +29,9 @@ if (!gl)
 }
 
 var thumbnailData = null;
+var processInfo = {
+	processID: -100
+}
 
 document.getElementById('saveBtn').addEventListener('click',
 	function ()
@@ -60,15 +63,45 @@ document.getElementById('executeBtn').addEventListener('click',
 	{
 		try
 		{
-			eval(document.aceEditor.getValue(), gl=gl, canvas=canvas);
+
+			var evalString = document.mainAceEditor.getValue() + 
+`
+var then = 0;
+function drawAnimation(now) {
+
+	if (processID != processInfo.processID) {
+		console.log("Exited from " + processID);
+		return;
+	}
+	
+	var deltaTime = now - then;
+`
++ document.animationAceEditor.getValue() + 
+`
+	window.requestAnimationFrame(drawAnimation);
+	then = now;
+}
+drawAnimation(0);
+`;
+
+			processInfo.processID += 1;
+			setTimeout(function() {
+				console.log(JSON.stringify(processInfo));
+				var processID = processInfo.processID;
+				eval(evalString);
+				console.log("TIMEOUT EXECUTED")
+			}, 0)
+			
 		} catch (error)
 		{
-			console.error('Error executing code:', error);
+			alert('Error executing code:', error);
 		}
 	});
 
 document.getElementById('saveThumbnailBtn').addEventListener('click',
-	function ()
-	{
-		thumbnailData = canvas.toDataURL();
-	});
+function ()
+{
+	thumbnailData = canvas.toDataURL();
+});
+
+
