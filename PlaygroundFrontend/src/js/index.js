@@ -44,7 +44,7 @@ document.getElementById('saveBtn').addEventListener('click',
 			description: description,
 			thumbnail: thumbnailData,
 			files: {
-				"main.js": document.mainAceEditor.getValue()
+				"main.js": document.mainAceEditor.getValue(),
 				"animation.js": document.animationAceEditor.getValue()
 			}
 		};
