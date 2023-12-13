@@ -3,6 +3,8 @@ import 'ace-builds/src-noconflict/mode-javascript';
 import 'ace-builds/src-noconflict/theme-monokai';
 import axios from 'axios';
 
+import * as threeImport from "threejs-math";
+
 document.mainAceEditor = ace.edit("main_editor", {
 	theme: "ace/theme/monokai",
 	mode: "ace/mode/javascript",
@@ -88,6 +90,7 @@ drawAnimation(0);
 			processInfo.processID += 1;
 			setTimeout(function() {
 				var processID = processInfo.processID;
+				var THREE = threeImport;
 				eval(evalString);
 			}, 0)
 			

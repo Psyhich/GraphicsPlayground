@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-	"build": "npx webpack",
-	"build-dev": "npx webpack --mode development"
+    "build": "npx webpack",
+    "build-dev": "npx webpack --mode development"
   },
   "author": "",
   "license": "MIT",
@@ -12,6 +12,7 @@
     "ace-builds": "^1.32.0",
     "axios": "^1.6.2",
     "js-treeview": "^1.1.5",
+    "threejs-math": "^0.147.0",
     "webpack": "^5.89.0",
     "webpack-cli": "^5.1.4"
   },
