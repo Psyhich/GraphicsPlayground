@@ -35,11 +35,23 @@ var processInfo = {
 	processID: -100
 }
 
-document.getElementById('saveBtn').addEventListener('click',
+function getCanvasImage()
+{
+	return canvas.toDataURL();
+}
+
+let saveButton = document.getElementById('saveBtn');
+
+saveButton.addEventListener('click',
 	function ()
 	{
 		var name = prompt("Enter project name:");
 		var description = prompt("Enter project description:");
+
+		if (!thumbnailData)
+		{
+			thumbnailData = getCanvasImage();
+		}
 
 		var jsonData = {
 			name: name,
@@ -103,7 +115,7 @@ drawAnimation(0);
 document.getElementById('saveThumbnailBtn').addEventListener('click',
 function ()
 {
-	thumbnailData = canvas.toDataURL();
+	thumbnailData = getCanvasImage();
 });
 
 
